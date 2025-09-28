@@ -1,8 +1,17 @@
 # Instagram Profile Image Downloader
 
-A powerful Tampermonkey userscript that allows you to download all images from Instagram profiles with both individual and bulk download capabilities.
+A powerful Tampermonkey userscript that allows you to download all images from Instagram profiles with both individual and bulk download capabilities. Features a modern draggable UI with enhanced user experience.
 
 ## 📸 Features
+
+### Modern User Interface
+- **🌠 Draggable UI**: Main download button with shooting star drag handle for repositioning
+- **📍 Position Dropdown**: Five preset positions (Top Left, Top Right, Bottom Right, Bottom Left, Center)
+- **⭐ Contributor Button**: Direct link to GitHub repository with star icon
+- **🎨 Animated Elements**: Subtle pulse animation on drag handle with smooth hover effects
+- **💾 Persistent Settings**: Remembers chosen position across browser sessions
+- **🖱️ Intuitive Controls**: All UI elements appear on hover for clean interface
+- **⚡ Smooth Transitions**: Fluid animations and visual feedback for all interactions
 
 ### Individual Downloads
 - **💾 Save Icons**: Hover over Instagram posts to see individual download icons
@@ -35,10 +44,13 @@ A powerful Tampermonkey userscript that allows you to download all images from I
 - **Non-blocking**: Notifications don't interfere with scrolling or clicking
 - **Smart Replacement**: New notifications replace existing ones to prevent spam
 
-### User Experience
+### Enhanced User Experience
 - **Keyboard Shortcuts**: 
   - `Ctrl + Shift + D` to start bulk downloading
-  - `Ctrl + `` ` to toggle terminal console
+  - `Ctrl + `` ` (backtick) to toggle terminal console
+- **Draggable Interface**: Click and drag the 🌠 shooting star handle to reposition
+- **Position Presets**: Choose from 5 strategic positions via 📍 dropdown menu
+- **GitHub Integration**: Quick access to contribute via ⭐ star button
 - **Smart Notifications**: Toast notifications with success/error messages
 - **Smart Filename Generation**: Creates descriptive filenames based on image alt text
 - **Error Handling**: Graceful error handling with detailed logging and user notifications
@@ -61,6 +73,31 @@ A powerful Tampermonkey userscript that allows you to download all images from I
 6. **Enable**: Make sure the script is enabled in Tampermonkey dashboard
 
 ## 📖 Usage
+
+### UI Interaction Guide
+
+#### Moving the Download Interface
+1. **Hover** over the purple "Download Images" button to reveal controls
+2. **Drag** the 🌠 shooting star handle to move the interface anywhere on screen
+3. **Release** to lock the new position
+4. **Position persists** across page refreshes and new Instagram sessions
+
+#### Using Position Presets
+1. **Hover** over the download button to reveal the 📍 position dropdown
+2. **Click** the 📍 icon to open position menu
+3. **Select** from five preset positions:
+   - **Top Left**: Upper left corner
+   - **Top Right**: Upper right corner (default)
+   - **Bottom Right**: Lower right corner
+   - **Bottom Left**: Lower left corner
+   - **Center**: Center of screen
+4. **Position updates** immediately with smooth animation
+
+#### Contributing to Development
+1. **Hover** over the download button to reveal the ⭐ contributor button
+2. **Click** the ⭐ star icon to open GitHub repository
+3. **Contribute** by reporting issues, suggesting features, or submitting code
+4. **Star** the repository if you find it helpful
 
 ### Individual Image Downloads
 
@@ -163,7 +200,17 @@ image-{index}-{description}.jpg
 
 ### Keyboard Shortcuts
 - **Bulk Download**: `Ctrl + Shift + D` - Start bulk download process
-- **Terminal Toggle**: `Ctrl + `` ` (backtick) - Show/hide terminal console
+- **Terminal Toggle**: `Ctrl + \`` (backtick key) - Show/hide terminal console
+
+### UI Positioning
+- **Drag Handle**: Click and drag the 🌠 shooting star to move interface
+- **Position Presets**: Use 📍 dropdown for quick positioning:
+  - Top Left (10px from top-left corner)
+  - Top Right (10px from top-right corner) - Default
+  - Bottom Right (10px from bottom-right corner)
+  - Bottom Left (10px from bottom-left corner)
+  - Center (centered on screen)
+- **Persistent Memory**: Chosen position is remembered across sessions
 
 ### Timing Settings
 - **Scroll Delay**: 2 seconds between scroll attempts
@@ -202,6 +249,10 @@ The bulk download stops when:
 - **Toast Notifications**: Center-positioned with fade animations and auto-dismiss
 - **CSS Injection**: Dynamic styling for notifications with color-coded message types
 - **Event Management**: Proper cleanup of notification timers and DOM elements
+- **Drag System**: Efficient mouse event handling with proper cleanup
+- **Position Management**: LocalStorage integration for persistent UI settings
+- **Hover Controls**: CSS-based reveal system for clean interface
+- **Animation Engine**: Hardware-accelerated CSS transitions and transforms
 
 ## 🛠️ Troubleshooting
 
@@ -246,6 +297,33 @@ The bulk download stops when:
 - Try refreshing the page to reinitialize the script
 - Check browser console for CSS-related errors
 - Verify no adblockers are interfering with popup elements
+
+#### UI Controls Not Visible
+**Cause**: CSS conflicts or hover state issues
+**Solutions**:
+- Hover over the main download button to reveal controls (🌠📍⭐)
+- Refresh the page if controls don't appear on hover
+- Check if other extensions are modifying CSS
+- Try a different position preset if current position is problematic
+- Clear browser cache and restart Tampermonkey if needed
+
+#### Drag Functionality Not Working
+**Cause**: Event conflicts or browser restrictions
+**Solutions**:
+- Ensure you're dragging the 🌠 shooting star handle, not the main button
+- Check for interfering browser extensions
+- Try using position presets as alternative to dragging
+- Refresh page and wait for script to fully load
+- Test in incognito mode to isolate extension conflicts
+
+#### Position Settings Not Saving
+**Cause**: LocalStorage restrictions or browser settings
+**Solutions**:
+- Check browser's localStorage permissions for Instagram
+- Ensure cookies and site data are allowed for instagram.com
+- Try manually selecting position again
+- Clear browser data and reconfigure if persistent
+- Check if private/incognito mode is preventing storage
 
 #### Incomplete Downloads
 **Cause**: Network issues or rate limiting
@@ -297,7 +375,18 @@ Download complete! Successfully downloaded 23 images after 5 scroll attempts.
 
 ## 📝 Changelog
 
-### Version 1.0
+### Version 2.0 - Modern UI Update
+- ✨ **Draggable Interface**: 🌠 Shooting star drag handle with smooth repositioning
+- ✨ **Position Presets**: 📍 Five strategic preset positions with dropdown menu
+- ✨ **Contributor Integration**: ⭐ Direct GitHub repository access button
+- ✨ **Persistent Settings**: Position preferences saved across sessions
+- ✨ **Enhanced Animations**: Subtle pulse effects and smooth transitions
+- ✨ **Improved UX**: Hover-reveal controls for cleaner interface
+- ✨ **Visual Polish**: Modern styling with consistent iconography
+- 🐛 **Bug Fixes**: Resolved keyboard shortcut conflicts and duplicate event listeners
+- 🔧 **Code Optimization**: Cleaner event handling and performance improvements
+
+### Version 1.0 - Initial Release
 - ✨ Individual download icons on hover
 - ✨ Bulk download with automatic scrolling
 - ✨ Smart filename generation from alt text

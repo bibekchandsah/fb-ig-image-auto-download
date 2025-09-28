@@ -18,6 +18,8 @@ story
 div class x5yr21d x1n2onr6 xh8yej3
           x5yr21d x1n2onr6 xh8yej3
 img class xl1xv1r x15mokao x1ga7v0g x16uus16 xbiv7yw x5yr21d xmz0i5r x193iq5w xh8yej3  
+          xl1xv1r x15mokao x1ga7v0g x16uus16 xbiv7yw
+          
 add download button for each image
 
 Uses GM_download for reliable downloading
