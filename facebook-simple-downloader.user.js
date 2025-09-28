@@ -137,7 +137,37 @@
             z-index: 1;
         }
 
-        #facebook-downloader-btn:hover #terminal-toggle-btn {
+        #contributor-btn {
+            position: absolute;
+            top: 50%;
+            left: -70px;
+            transform: translateY(-50%);
+            background: #24292e;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        #contributor-btn:hover {
+            background: #0366d6;
+            transform: translateY(-50%) translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        #facebook-downloader-btn:hover #terminal-toggle-btn,
+        #facebook-downloader-btn:hover #contributor-btn {
             opacity: 1;
         }
 
@@ -368,9 +398,18 @@
     terminalToggleBtn.textContent = '⬇️';
     terminalToggleBtn.title = 'Toggle Terminal Console';
 
-    // Assemble the container - download button contains both drag handle and terminal button
+    // Create contributor button
+    const contributorBtn = document.createElement('a');
+    contributorBtn.id = 'contributor-btn';
+    contributorBtn.href = 'https://github.com/bibekchandsah/fb-ig-image-auto-download';
+    contributorBtn.target = '_blank';
+    contributorBtn.title = 'View on GitHub - Contribute';
+    contributorBtn.innerHTML = '<span style="font-size: 14px;">⭐</span>';
+
+    // Assemble the container - download button contains drag handle, terminal button, and contributor button
     downloadBtn.appendChild(dragHandle);
     downloadBtn.appendChild(terminalToggleBtn);
+    downloadBtn.appendChild(contributorBtn);
     downloaderContainer.appendChild(downloadBtn);
 
     document.body.appendChild(downloaderContainer);
@@ -487,6 +526,11 @@
         e.preventDefault();
         e.stopPropagation();
         toggleTerminal();
+    });
+
+    // Prevent contributor button from triggering download
+    contributorBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Don't prevent default since we want the link to work
     });
 
     document.getElementById('terminal-close').addEventListener('click', () => {
