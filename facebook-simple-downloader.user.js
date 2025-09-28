@@ -368,14 +368,6 @@
         }
     });
 
-    // Add keyboard shortcut for terminal (Ctrl + `)
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === '`') {
-            e.preventDefault();
-            toggleTerminal();
-        }
-    });
-
     // Notification system
     function showNotification(message, type = 'info', duration = 3000) {
         // Remove any existing notifications
@@ -400,61 +392,6 @@
         return notification;
     }
 
-    // Terminal logging functions
-    function logToTerminal(message, type = 'info') {
-        const timestamp = new Date().toLocaleTimeString();
-        const logLine = `[${timestamp}] ${message}\n`;
-
-        const content = document.getElementById('terminal-content');
-        const logElement = document.createElement('span');
-        logElement.className = `log-${type}`;
-        logElement.textContent = logLine;
-
-        content.appendChild(logElement);
-        content.scrollTop = content.scrollHeight;
-    }
-
-    function clearTerminal() {
-        const content = document.getElementById('terminal-content');
-        content.innerHTML = '';
-        logToTerminal('Terminal cleared', 'info');
-    }
-
-    // Terminal toggle functionality
-    function toggleTerminal() {
-        terminalVisible = !terminalVisible;
-        const terminal = document.getElementById('terminal-console');
-
-        if (terminalVisible) {
-            terminal.classList.add('show');
-            terminalToggleBtn.textContent = '⬆️';
-            terminalToggleBtn.title = 'Hide Terminal Console';
-            logToTerminal('Terminal opened', 'info');
-        } else {
-            terminal.classList.remove('show');
-            terminalToggleBtn.textContent = '⬇️';
-            terminalToggleBtn.title = 'Show Terminal Console';
-        }
-    }
-
-    // Add event listeners for terminal
-    terminalToggleBtn.addEventListener('click', toggleTerminal);
-
-    document.getElementById('terminal-close').addEventListener('click', () => {
-        if (terminalVisible) {
-            toggleTerminal();
-        }
-    });
-
-    // Add keyboard shortcut for terminal (Ctrl + `)
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === '`') {
-            e.preventDefault();
-            toggleTerminal();
-        }
-    });
-
-    // Function to extract image URL
     function extractImageUrl(img) {
         if (img.src) {
             return img.src;
@@ -1096,11 +1033,17 @@
     // Add click event to bulk download button
     downloadBtn.addEventListener('click', findAndDownloadAllImages);
 
-    // Add keyboard shortcut (Ctrl + Shift + D)
+    // Add keyboard shortcuts
     document.addEventListener('keydown', function(e) {
+        // Ctrl + Shift + D for bulk download
         if (e.ctrlKey && e.shiftKey && e.key === 'D') {
             e.preventDefault();
             findAndDownloadAllImages();
+        }
+        // Ctrl + ` for terminal toggle
+        else if (e.ctrlKey && e.key === '`') {
+            e.preventDefault();
+            toggleTerminal();
         }
     });
 
