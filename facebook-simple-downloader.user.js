@@ -10,7 +10,6 @@
 // @grant        GM_download
 // @grant        GM_addStyle
 // @icon         https://cdn-icons-png.flaticon.com/512/5968/5968764.png
-// @grant        none
 // @license      MIT
 // ==/UserScript==
 

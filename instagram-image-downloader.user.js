@@ -7,7 +7,6 @@
 // @match        https://www.instagram.com/*
 // @grant        GM_download
 // @grant        GM_addStyle
-// @grant        none
 // @license      MIT
 // @icon         https://cdn-icons-png.flaticon.com/512/15713/15713420.png
 // ==/UserScript==
