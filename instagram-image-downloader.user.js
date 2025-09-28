@@ -2,11 +2,14 @@
 // @name         Instagram Profile Image Downloader
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  Download all images from Instagram profile with specific classes
-// @author       You
+// @description  Download all images, post, story, whole profile post from Instagram image downloader
+// @author       Bibek Chand Sah
 // @match        https://www.instagram.com/*
 // @grant        GM_download
 // @grant        GM_addStyle
+// @grant        none
+// @license      MIT
+// @icon         https://cdn-icons-png.flaticon.com/512/15713/15713420.png
 // ==/UserScript==
 // save icon in each post
 

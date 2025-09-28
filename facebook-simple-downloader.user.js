@@ -1,14 +1,17 @@
 // ==UserScript==
-// @name         Facebook Simple Image Downloader
+// @name         Facebook Image Downloader
 // @namespace    http://tampermonkey.net/
 // @version      1.0
-// @description  Simple Facebook image downloader for specific div and image classes
-// @author       You
+// @description  Facebook image, post, story, whole profile post, image downloader
+// @author       Bibek Chand Sah
 // @match        https://www.facebook.com/*
 // @match        https://facebook.com/*
 // @match        https://m.facebook.com/*
 // @grant        GM_download
 // @grant        GM_addStyle
+// @icon         https://cdn-icons-png.flaticon.com/512/5968/5968764.png
+// @grant        none
+// @license      MIT
 // ==/UserScript==
 
 (function() {
