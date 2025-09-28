@@ -18,7 +18,7 @@
     GM_addStyle(`
         #facebook-downloader-container {
             position: fixed;
-            top: 10px;
+            top: 60px;
             right: 10px;
             z-index: 9999;
             display: inline-block;
@@ -166,8 +166,73 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
         }
 
+        #position-dropdown {
+            position: absolute;
+            top: 50%;
+            left: -105px;
+            transform: translateY(-50%);
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        #position-dropdown:hover {
+            background: #357abd;
+            transform: translateY(-50%) translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .position-menu {
+            position: absolute;
+            bottom: -135px;
+            left: -140px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 5px;
+            display: none;
+            z-index: 1000;
+            min-width: 120px;
+        }
+
+        .position-menu.show {
+            display: block;
+        }
+
+        .position-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 11px;
+            color: #333;
+            transition: background 0.2s ease;
+        }
+
+        .position-option:hover {
+            background: #f0f0f0;
+        }
+
+        .position-option.active {
+            background: #4a90e2;
+            color: white;
+        }
+
         #facebook-downloader-btn:hover #terminal-toggle-btn,
-        #facebook-downloader-btn:hover #contributor-btn {
+        #facebook-downloader-btn:hover #contributor-btn,
+        #facebook-downloader-btn:hover #position-dropdown {
             opacity: 1;
         }
 
@@ -406,10 +471,29 @@
     contributorBtn.title = 'View on GitHub - Contribute';
     contributorBtn.innerHTML = '<span style="font-size: 14px;">⭐</span>';
 
-    // Assemble the container - download button contains drag handle, terminal button, and contributor button
+    // Create position dropdown
+    const positionDropdown = document.createElement('button');
+    positionDropdown.id = 'position-dropdown';
+    positionDropdown.title = 'Change icon position';
+    positionDropdown.innerHTML = '📍';
+
+    // Create dropdown menu
+    const positionMenu = document.createElement('div');
+    positionMenu.className = 'position-menu';
+    positionMenu.innerHTML = `
+        <div class="position-option active" data-position="top-left">Top Left</div>
+        <div class="position-option" data-position="top-right">Top Right</div>
+        <div class="position-option" data-position="bottom-right">Bottom Right</div>
+        <div class="position-option" data-position="bottom-left">Bottom Left</div>
+        <div class="position-option" data-position="center">Center</div>
+    `;
+    positionDropdown.appendChild(positionMenu);
+
+    // Assemble the container - download button contains all control buttons
     downloadBtn.appendChild(dragHandle);
     downloadBtn.appendChild(terminalToggleBtn);
     downloadBtn.appendChild(contributorBtn);
+    downloadBtn.appendChild(positionDropdown);
     downloaderContainer.appendChild(downloadBtn);
 
     document.body.appendChild(downloaderContainer);
@@ -531,6 +615,99 @@
     // Prevent contributor button from triggering download
     contributorBtn.addEventListener('click', function(e) {
         e.stopPropagation(); // Don't prevent default since we want the link to work
+    });
+
+    // Position dropdown functionality
+    let currentPosition = localStorage.getItem('fb-icon-position') || 'top-left';
+
+    const positionSettings = {
+        'top-left': { top: '10px', left: '10px', right: 'auto', bottom: 'auto', transform: 'none' },
+        'top-right': { top: '10px', right: '10px', left: 'auto', bottom: 'auto', transform: 'none' },
+        'bottom-right': { bottom: '10px', right: '10px', top: 'auto', left: 'auto', transform: 'none' },
+        'bottom-left': { bottom: '10px', left: '10px', top: 'auto', right: 'auto', transform: 'none' },
+        'center': { top: '50%', right: '50%', left: 'auto', bottom: 'auto', transform: 'none' }
+    };
+
+    function updateIconPosition(position) {
+        const settings = positionSettings[position];
+        const iconStyle = `
+            .fb-download-icon {
+                position: absolute;
+                top: ${settings.top};
+                right: ${settings.right};
+                bottom: ${settings.bottom};
+                left: ${settings.left};
+                transform: ${settings.transform};
+                background: rgba(0, 0, 0, 0.7);
+                color: white;
+                padding: 5px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                z-index: 1000;
+                opacity: 0;
+                transition: all 0.3s ease;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        `;
+
+        // Remove old style if exists
+        const oldStyle = document.getElementById('fb-icon-position-style');
+        if (oldStyle) oldStyle.remove();
+
+        // Add new style
+        const styleElement = document.createElement('style');
+        styleElement.id = 'fb-icon-position-style';
+        styleElement.textContent = iconStyle;
+        document.head.appendChild(styleElement);
+
+        // Update active option in menu
+        positionMenu.querySelectorAll('.position-option').forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.position === position) {
+                option.classList.add('active');
+            }
+        });
+
+        currentPosition = position;
+        localStorage.setItem('fb-icon-position', position);
+
+        // Log the change
+        if (typeof logToTerminal === 'function') {
+            logToTerminal(`Icon position changed to: ${position}`, 'info');
+        }
+    }
+
+    // Initialize with saved position
+    updateIconPosition(currentPosition);
+
+    // Position dropdown event listeners
+    positionDropdown.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        positionMenu.classList.toggle('show');
+    });
+
+    // Position option click handlers
+    positionMenu.addEventListener('click', function(e) {
+        if (e.target.classList.contains('position-option')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const position = e.target.dataset.position;
+            updateIconPosition(position);
+            positionMenu.classList.remove('show');
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!positionDropdown.contains(e.target)) {
+            positionMenu.classList.remove('show');
+        }
     });
 
     document.getElementById('terminal-close').addEventListener('click', () => {
