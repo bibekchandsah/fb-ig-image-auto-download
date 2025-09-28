@@ -16,11 +16,16 @@
 
     // Add styles for the download button and terminal UI
     GM_addStyle(`
-        #instagram-downloader-btn {
+        #instagram-downloader-container {
             position: fixed;
             top: 10px;
             right: 10px;
             z-index: 9999;
+            display: inline-block;
+        }
+
+        #instagram-downloader-btn {
+            position: relative;
             background: #405de6;
             color: white;
             border: none;
@@ -29,30 +34,179 @@
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            user-select: none;
         }
 
         #instagram-downloader-btn:hover {
             background: #3b57d6;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        #drag-handle {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: rgba(255,255,255,0.9);
+            border: 2px solid #405de6;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            cursor: grab;
+            transition: all 0.2s ease;
+            animation: subtle-pulse 3s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        @keyframes subtle-pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+
+        #drag-handle:hover {
+            background: rgba(255,255,255,1);
+            transform: scale(1.2);
+            animation: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        #drag-handle:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        #instagram-downloader-container.dragging {
+            opacity: 0.8;
+            transform: rotate(2deg);
+            z-index: 10000;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
 
         #terminal-toggle-btn {
-            position: fixed;
-            top: 10px;
-            right: 180px;
-            z-index: 9999;
+            position: absolute;
+            top: 50%;
+            left: -35px;
+            transform: translateY(-50%);
             background: #333;
             color: white;
             border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
+            padding: 5px 8px;
+            border-radius: 3px;
             cursor: pointer;
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            font-size: 16px;
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1;
         }
 
-        #terminal-toggle-btn:hover {
-            background: #444;
+        #contributor-btn {
+            position: absolute;
+            top: 50%;
+            left: -70px;
+            transform: translateY(-50%);
+            background: #24292e;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        #contributor-btn:hover {
+            background: #0366d6;
+            transform: translateY(-50%) translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        #position-dropdown {
+            position: absolute;
+            top: 50%;
+            left: -105px;
+            transform: translateY(-50%);
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        #position-dropdown:hover {
+            background: #357abd;
+            transform: translateY(-50%) translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .position-menu {
+            position: absolute;
+            bottom: -135px;
+            left: -140px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            padding: 5px;
+            display: none;
+            z-index: 1000;
+            min-width: 120px;
+        }
+
+        .position-menu.show {
+            display: block;
+        }
+
+        .position-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 3px;
+            font-size: 11px;
+            color: #333;
+            transition: background 0.2s ease;
+        }
+
+        .position-option:hover {
+            background: #f0f0f0;
+        }
+
+        .position-option.active {
+            background: #4a90e2;
+            color: white;
+        }
+
+        #instagram-downloader-btn:hover #terminal-toggle-btn,
+        #instagram-downloader-btn:hover #contributor-btn,
+        #instagram-downloader-btn:hover #position-dropdown {
+            opacity: 1;
         }
 
         #terminal-console {
@@ -246,18 +400,61 @@
         }
     `);
 
+    // Create container for download button and controls
+    const downloaderContainer = document.createElement('div');
+    downloaderContainer.id = 'instagram-downloader-container';
+
     // Create download button
     const downloadBtn = document.createElement('button');
     downloadBtn.id = 'instagram-downloader-btn';
     downloadBtn.textContent = 'Download Images';
-    document.body.appendChild(downloadBtn);
+
+    // Create separate drag handle
+    const dragHandle = document.createElement('div');
+    dragHandle.id = 'drag-handle';
+    dragHandle.innerHTML = '🌠';
+    dragHandle.title = 'Drag to move';
 
     // Create terminal toggle button
     const terminalToggleBtn = document.createElement('button');
     terminalToggleBtn.id = 'terminal-toggle-btn';
     terminalToggleBtn.textContent = '⬇️';
     terminalToggleBtn.title = 'Toggle Terminal Console';
-    document.body.appendChild(terminalToggleBtn);
+
+    // Create contributor button
+    const contributorBtn = document.createElement('a');
+    contributorBtn.id = 'contributor-btn';
+    contributorBtn.href = 'https://github.com/bibekchandsah/fb-ig-image-auto-download';
+    contributorBtn.target = '_blank';
+    contributorBtn.title = 'View on GitHub - Contribute';
+    contributorBtn.innerHTML = '<span style="font-size: 14px;">⭐</span>';
+
+    // Create position dropdown
+    const positionDropdown = document.createElement('button');
+    positionDropdown.id = 'position-dropdown';
+    positionDropdown.title = 'Change icon position';
+    positionDropdown.innerHTML = '📍';
+
+    // Create dropdown menu
+    const positionMenu = document.createElement('div');
+    positionMenu.className = 'position-menu';
+    positionMenu.innerHTML = `
+        <div class="position-option" data-position="top-left">Top Left</div>
+        <div class="position-option" data-position="top-right">Top Right</div>
+        <div class="position-option active" data-position="bottom-right">Bottom Right</div>
+        <div class="position-option" data-position="bottom-left">Bottom Left</div>
+        <div class="position-option" data-position="center">Center</div>
+    `;
+    positionDropdown.appendChild(positionMenu);
+
+    // Assemble the container
+    downloadBtn.appendChild(dragHandle);
+    downloadBtn.appendChild(terminalToggleBtn);
+    downloadBtn.appendChild(contributorBtn);
+    downloadBtn.appendChild(positionDropdown);
+    downloaderContainer.appendChild(downloadBtn);
+
+    document.body.appendChild(downloaderContainer);
 
     // Create terminal console
     const terminalConsole = document.createElement('div');
@@ -277,6 +474,94 @@
     terminalConsole.appendChild(terminalHeader);
     terminalConsole.appendChild(terminalContent);
     document.body.appendChild(terminalConsole);
+
+    // Add drag functionality to the separate handle
+    let isDragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    dragHandle.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        isDragging = true;
+
+        const rect = downloaderContainer.getBoundingClientRect();
+        dragOffset.x = e.clientX - rect.left;
+        dragOffset.y = e.clientY - rect.top;
+
+        downloaderContainer.classList.add('dragging');
+        document.body.style.userSelect = 'none';
+    });
+
+    // Prevent drag handle from triggering download on any click event
+    dragHandle.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    document.addEventListener('mousemove', function(e) {
+        if (!isDragging) return;
+
+        e.preventDefault();
+        const x = e.clientX - dragOffset.x;
+        const y = e.clientY - dragOffset.y;
+
+        // Keep container within viewport bounds
+        const maxX = window.innerWidth - downloaderContainer.offsetWidth;
+        const maxY = window.innerHeight - downloaderContainer.offsetHeight;
+
+        const constrainedX = Math.max(0, Math.min(x, maxX));
+        const constrainedY = Math.max(0, Math.min(y, maxY));
+
+        downloaderContainer.style.left = constrainedX + 'px';
+        downloaderContainer.style.top = constrainedY + 'px';
+        downloaderContainer.style.right = 'auto';
+    });
+
+    document.addEventListener('mouseup', function(e) {
+        if (isDragging) {
+            isDragging = false;
+            downloaderContainer.classList.remove('dragging');
+            document.body.style.userSelect = '';
+
+            // Save position to localStorage
+            const rect = downloaderContainer.getBoundingClientRect();
+            localStorage.setItem('ig-downloader-pos', JSON.stringify({
+                left: rect.left,
+                top: rect.top
+            }));
+        }
+    });
+
+    // Additional safety: end drag on mouse leave (prevents sticking)
+    document.addEventListener('mouseleave', function(e) {
+        if (isDragging) {
+            isDragging = false;
+            downloaderContainer.classList.remove('dragging');
+            document.body.style.userSelect = '';
+        }
+    });
+
+    // End drag if Escape key is pressed
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isDragging) {
+            isDragging = false;
+            downloaderContainer.classList.remove('dragging');
+            document.body.style.userSelect = '';
+        }
+    });
+
+    // Restore saved position
+    const savedPos = localStorage.getItem('ig-downloader-pos');
+    if (savedPos) {
+        try {
+            const pos = JSON.parse(savedPos);
+            downloaderContainer.style.left = pos.left + 'px';
+            downloaderContainer.style.top = pos.top + 'px';
+            downloaderContainer.style.right = 'auto';
+        } catch (e) {
+            console.log('Could not restore container position:', e);
+        }
+    }
 
     // Create progress indicator
     const progressDiv = document.createElement('div');
@@ -336,21 +621,129 @@
     function toggleTerminal() {
         terminalVisible = !terminalVisible;
         const terminal = document.getElementById('terminal-console');
+        const toggleBtn = document.getElementById('terminal-toggle-btn');
 
         if (terminalVisible) {
-            terminal.classList.add('show');
-            terminalToggleBtn.textContent = '⬆️';
-            terminalToggleBtn.title = 'Hide Terminal Console';
+            if (terminal) {
+                terminal.classList.add('show');
+            }
+            if (toggleBtn) {
+                toggleBtn.textContent = '⬆️';
+                toggleBtn.title = 'Hide Terminal Console';
+            }
             logToTerminal('Terminal opened', 'info');
         } else {
-            terminal.classList.remove('show');
-            terminalToggleBtn.textContent = '⬇️';
-            terminalToggleBtn.title = 'Show Terminal Console';
+            if (terminal) {
+                terminal.classList.remove('show');
+            }
+            if (toggleBtn) {
+                toggleBtn.textContent = '⬇️';
+                toggleBtn.title = 'Show Terminal Console';
+            }
+            logToTerminal('Terminal closed', 'info');
         }
     }
 
-    // Add event listeners for terminal
-    terminalToggleBtn.addEventListener('click', toggleTerminal);
+    // Add event listeners for terminal (after elements are in DOM)
+    terminalToggleBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleTerminal();
+    });
+
+    // Prevent contributor button from triggering download
+    contributorBtn.addEventListener('click', function(e) {
+        e.stopPropagation(); // Don't prevent default since we want the link to work
+    });
+
+    // Position dropdown functionality
+    let currentPosition = localStorage.getItem('ig-icon-position') || 'bottom-right';
+
+    const positionSettings = {
+        'top-left': { top: '10px', left: '10px', right: 'auto', bottom: 'auto', transform: 'none' },
+        'top-right': { top: '10px', right: '10px', left: 'auto', bottom: 'auto', transform: 'none' },
+        'bottom-right': { bottom: '10px', right: '10px', top: 'auto', left: 'auto', transform: 'none' },
+        'bottom-left': { bottom: '10px', left: '10px', top: 'auto', right: 'auto', transform: 'none' },
+        'center': { top: '50%', right: '50%', left: 'auto', bottom: 'auto', transform: 'none' }
+    };
+
+    function updateIconPosition(position) {
+        const settings = positionSettings[position];
+        const iconStyle = `
+            .individual-download-icon {
+                position: absolute;
+                top: ${settings.top};
+                right: ${settings.right};
+                bottom: ${settings.bottom};
+                left: ${settings.left};
+                transform: ${settings.transform};
+                width: 32px;
+                height: 32px;
+                background: rgba(0, 0, 0, 0.7);
+                border-radius: 50%;
+                cursor: pointer;
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                opacity: 1;
+                font-size: 16px;
+            }
+        `;
+
+        // Remove old style if exists
+        const oldStyle = document.getElementById('ig-icon-position-style');
+        if (oldStyle) oldStyle.remove();
+
+        // Add new style
+        const styleElement = document.createElement('style');
+        styleElement.id = 'ig-icon-position-style';
+        styleElement.textContent = iconStyle;
+        document.head.appendChild(styleElement);
+
+        // Update active option in menu
+        positionMenu.querySelectorAll('.position-option').forEach(option => {
+            option.classList.remove('active');
+            if (option.dataset.position === position) {
+                option.classList.add('active');
+            }
+        });
+
+        currentPosition = position;
+        localStorage.setItem('ig-icon-position', position);
+
+        // Log the change
+        logToTerminal(`Icon position changed to: ${position}`, 'info');
+    }
+
+    // Initialize with saved position
+    updateIconPosition(currentPosition);
+
+    // Position dropdown event listeners
+    positionDropdown.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        positionMenu.classList.toggle('show');
+    });
+
+    // Position option click handlers
+    positionMenu.addEventListener('click', function(e) {
+        if (e.target.classList.contains('position-option')) {
+            e.preventDefault();
+            e.stopPropagation();
+            const position = e.target.dataset.position;
+            updateIconPosition(position);
+            positionMenu.classList.remove('show');
+        }
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!positionDropdown.contains(e.target)) {
+            positionMenu.classList.remove('show');
+        }
+    });
 
     document.getElementById('terminal-close').addEventListener('click', () => {
         if (terminalVisible) {
@@ -358,9 +751,9 @@
         }
     });
 
-    // Add keyboard shortcut for terminal (Ctrl + `)
+    // DISABLED - Add keyboard shortcut for terminal (Ctrl + `) - DUPLICATE REMOVED
     document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === '`') {
+        if (false && e.ctrlKey && e.key === '`') { // DISABLED - duplicate listener
             e.preventDefault();
             toggleTerminal();
         }
@@ -785,13 +1178,23 @@
     }
 
     // Add click event to download button
-    downloadBtn.addEventListener('click', findAndDownloadImages);
+    downloadBtn.addEventListener('click', function(e) {
+        // Only trigger download if the button itself (or its text) is clicked, not child elements
+        if (e.target === downloadBtn || e.target.tagName === undefined) {
+            findAndDownloadImages();
+        }
+    });
 
     // Optional: Add keyboard shortcut (Ctrl + Shift + D)
     document.addEventListener('keydown', function(e) {
         if (e.ctrlKey && e.shiftKey && e.key === 'D') {
             e.preventDefault();
             findAndDownloadImages();
+        }
+        // Ctrl + ` for terminal toggle (consolidated keyboard shortcuts)
+        else if (e.ctrlKey && (e.key === '`' || e.key === 'Backquote' || e.code === 'Backquote')) {
+            e.preventDefault();
+            toggleTerminal();
         }
     });
 
