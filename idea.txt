@@ -1,0 +1,104 @@
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/bibekchandsah/fb-ig-image-auto-download.git
+git push -u origin main
+
+git remote add origin https://github.com/bibekchandsah/fb-ig-image-auto-download.git
+git branch -M main
+git push -u origin main
+
+
+post
+div class _aagv
+img class x5yr21d xu96u03 x10l6tqk x13vifvy x87ps6o xh8yej3
+
+story
+div class x5yr21d x1n2onr6 xh8yej3
+          x5yr21d x1n2onr6 xh8yej3
+img class xl1xv1r x15mokao x1ga7v0g x16uus16 xbiv7yw x5yr21d xmz0i5r x193iq5w xh8yej3  
+add download button for each image
+
+Uses GM_download for reliable downloading
+Keyboard Shortcut: Press Ctrl + Shift + D to start downloading
+3-second waits between scrolls
+Character cleaning: Removes invalid filename characters while preserving your text
+Length limit: Prevents extremely long filenames (max 100 characters)
+
+terminal Color-coded messages:
+🟢 Green: Success and info messages
+🔴 Red: Error messages
+🟡 Yellow: Warning messages
+🔵 Blue: Progress updates
+
+Detailed session logs with timestamps
+Ctrl + ` (backtick): Toggle terminal console
+Ctrl + Shift + D: Start bulk download (existing)
+
+Dynamic Image Detection for Stories
+
+Centered pop-up notifications that appear in the middle of the screen
+Color-coded by message type:
+🔴 Red: Error notifications
+🟡 Yellow: Warning notifications (for videos)
+🔵 Blue: Info/Success notifications
+
+
+
+
+
+
+
+facebook
+div class for
+------------------------------------
+single pic = x10l6tqk x13vifvy
+profile pic = xh8yej3
+
+cover pic = 
+first div class = html-div xdj266r x14z9mp xat24cr x1lziwak xyri2b x18d9i69 x1c1uobl xqtp20y xh8yej3 x6ikm8r x10wlt62 xgq9j65   x10l6tqk xjbys53 xsqj5wx x1jm3axb
+second div class = html-div x1qjc9v5 x1q0q8m5 x1qhh985 x18b5jzi x10w94by x1t7ytsu x14e42zd x13fuv20 x972fbf x1ey2m1c x9f619 x78zum5 xdt5ytf x1iyjqo2 xs83m0k xtijo5x x1o0tod x1qughib xat24cr x14z9mp x1lziwak xdj266r x2lwn1j xeuugli x18d9i69 xyri2b x1c1uobl xexx8yu x10l6tqk x13vifvy x1ja2u2z
+
+group pic =
+first div class = html-div xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x6ikm8r x10wlt62
+second div class = xqtp20y x6ikm8r x10wlt62 x1n2onr6
+third div class = x10l6tqk x13vifvy
+
+post = 
+html-div xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl
+x1n2onr6 x1ja2u2z x1jx94hy xw5cjc7 x1dmpuos x1vsv7so xau1kf4 x9f619 xh8yej3 x6ikm8r x10wlt62 xquyuld
+
+post view div class = x6s0dn4 x78zum5 xdt5ytf xl56j7k x1n2onr6
+
+story = html-div xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x18d0r48 x1ey2m1c xtijo5x x1o0tod   x10l6tqk x13vifvy xl8spv7 xt2wqj3
+
+image class for 
+----------------------------------------
+single pic = x15mokao x1ga7v0g x16uus16 xbiv7yw x1ey2m1c x5yr21d xtijo5x x1o0tod x10l6tqk x13vifvy xh8yej3 xl1xv1r
+profile pic = x1rg5ohu x5yr21d xl1xv1r xh8yej3
+cover pic = xz74otr x1ey2m1c x9f619 x5yr21d xtijo5x x1o0tod x10l6tqk x13vifvy xh8yej3
+group pic = xz74otr x15mokao x1ga7v0g x16uus16 xbiv7yw x1ey2m1c x5yr21d xtijo5x x1o0tod x10l6tqk x13vifvy xh8yej3
+post view = x15mokao x1ga7v0g x16uus16 xbiv7yw x1bwycvy x193iq5w x4fas0m x19kjcj4
+story = xz74otr x16uus16 xbiv7yw xjbqb8w xu25z0z x1fmog5m x1o0tod x10l6tqk xwa60dl x1cb1t30 xh8yej3 x1ja2u2z
+
+
+
+date & time
+---------------------------------
+div class = 
+html-div xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x6s0dn4 x17zd0t2 x78zum5 x1q0g3np x1a02dak
+
+span
+span class 
+html-span xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x1hl2dhg x16tdsg8 x1vvkbs x4k7w5x x1h91t0o x1h9r5lt x1jfb8zj xv2umb2 x1beo9mf xaigb6o x12ejxvf x3igimt xarpa2k xedcshv x1lytzrv x1t2pt76 x7ja8zs x1qrby5j
+
+a class
+x1i10hfl xjbqb8w x1ejq31n x18oe1m7 x1sy0etr xstzfhl x972fbf x10w94by x1qhh985 x14e42zd x9f619 x1ypdohk xt0psk2 x3ct3a4 xdj266r x14z9mp xat24cr x1lziwak xexx8yu xyri2b x18d9i69 x1c1uobl x16tdsg8 x1hl2dhg xggy1nq x1a2a7pz xkrqix3 x1sur9pj xi81zsa x1s688f
+
+span
+span x1rg5ohu x6ikm8r x10wlt62 x16dsc37 xt0b8zv
+all b ::before value
+
+
+
