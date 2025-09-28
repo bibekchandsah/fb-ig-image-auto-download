@@ -14,7 +14,7 @@
 (function() {
     'use strict';
 
-    // Add styles for the download button, terminal UI, and notifications
+    // Add minimal styles
     GM_addStyle(`
         #facebook-downloader-btn {
             position: fixed;
@@ -35,124 +35,6 @@
             background: #166fe5;
         }
 
-        #terminal-toggle-btn {
-            position: fixed;
-            top: 10px;
-            right: 180px;
-            z-index: 9999;
-            background: #333;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            font-size: 16px;
-        }
-
-        #terminal-toggle-btn:hover {
-            background: #444;
-        }
-
-        #terminal-console {
-            position: fixed;
-            bottom: -300px;
-            left: 0;
-            right: 0;
-            height: 300px;
-            background: #1e1e1e;
-            border-top: 2px solid #333;
-            z-index: 9998;
-            transition: bottom 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        #terminal-console.show {
-            bottom: 0;
-        }
-
-        #terminal-header {
-            background: #333;
-            color: white;
-            padding: 8px 16px;
-            font-size: 14px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        #terminal-close {
-            background: none;
-            border: none;
-            color: #ccc;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 0;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #terminal-close:hover {
-            color: white;
-        }
-
-        #terminal-content {
-            flex: 1;
-            background: #1e1e1e;
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            padding: 16px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            line-height: 1.4;
-        }
-
-        #terminal-content::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        #terminal-content::-webkit-scrollbar-track {
-            background: #2d2d2d;
-        }
-
-        #terminal-content::-webkit-scrollbar-thumb {
-            background: #555;
-            border-radius: 4px;
-        }
-
-        #terminal-content::-webkit-scrollbar-thumb:hover {
-            background: #777;
-        }
-
-        .log-info {
-            color: #00ff00;
-        }
-
-        .log-success {
-            color: #00ff00;
-            font-weight: bold;
-        }
-
-        .log-error {
-            color: #ff4444;
-            font-weight: bold;
-        }
-
-        .log-warning {
-            color: #ffaa00;
-        }
-
-        .log-progress {
-            color: #44aaff;
-        }
-
         #download-progress {
             position: fixed;
             top: 60px;
@@ -165,47 +47,6 @@
             display: none;
             max-width: 300px;
             word-wrap: break-word;
-        }
-
-        .notification {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 10000;
-            background: rgba(0, 0, 0, 0.9);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            font-size: 16px;
-            font-weight: bold;
-            text-align: center;
-            min-width: 300px;
-            animation: fadeInOut 3s ease-in-out;
-        }
-
-        .notification.error {
-            background: rgba(220, 53, 69, 0.9);
-            border: 2px solid #dc3545;
-        }
-
-        .notification.warning {
-            background: rgba(255, 193, 7, 0.9);
-            border: 2px solid #ffc107;
-            color: #000;
-        }
-
-        .notification.info {
-            background: #20a464e6;
-            border: 2px solid #00ff73ff;
-        }
-
-        @keyframes fadeInOut {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            15% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            85% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
 
         .fb-download-icon {
@@ -262,32 +103,6 @@
     downloadBtn.textContent = 'Download All Images';
     document.body.appendChild(downloadBtn);
 
-    // Create terminal toggle button
-    const terminalToggleBtn = document.createElement('button');
-    terminalToggleBtn.id = 'terminal-toggle-btn';
-    terminalToggleBtn.textContent = '⬇️';
-    terminalToggleBtn.title = 'Toggle Terminal Console';
-    document.body.appendChild(terminalToggleBtn);
-
-    // Create terminal console
-    const terminalConsole = document.createElement('div');
-    terminalConsole.id = 'terminal-console';
-
-    const terminalHeader = document.createElement('div');
-    terminalHeader.id = 'terminal-header';
-    terminalHeader.innerHTML = `
-        <span>Facebook Downloader Terminal</span>
-        <button id="terminal-close">×</button>
-    `;
-
-    const terminalContent = document.createElement('div');
-    terminalContent.id = 'terminal-content';
-    terminalContent.textContent = 'Terminal initialized. Ready for operations...\n';
-
-    terminalConsole.appendChild(terminalHeader);
-    terminalConsole.appendChild(terminalContent);
-    document.body.appendChild(terminalConsole);
-
     // Create progress indicator
     const progressDiv = document.createElement('div');
     progressDiv.id = 'download-progress';
@@ -296,163 +111,6 @@
     let downloadCount = 0;
     let isDownloading = false;
     let addedIcons = new Set();
-    let terminalVisible = false;
-
-    // Notification system
-    function showNotification(message, type = 'info', duration = 3000) {
-        // Remove any existing notifications
-        const existingNotifications = document.querySelectorAll('.notification');
-        existingNotifications.forEach(notif => notif.remove());
-
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-
-        // Add to page
-        document.body.appendChild(notification);
-
-        // Remove after duration
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, duration);
-
-        return notification;
-    }
-
-    // Terminal logging functions
-    function logToTerminal(message, type = 'info') {
-        const timestamp = new Date().toLocaleTimeString();
-        const logLine = `[${timestamp}] ${message}\n`;
-
-        const content = document.getElementById('terminal-content');
-        const logElement = document.createElement('span');
-        logElement.className = `log-${type}`;
-        logElement.textContent = logLine;
-
-        content.appendChild(logElement);
-        content.scrollTop = content.scrollHeight;
-    }
-
-    function clearTerminal() {
-        const content = document.getElementById('terminal-content');
-        content.innerHTML = '';
-        logToTerminal('Terminal cleared', 'info');
-    }
-
-    // Terminal toggle functionality
-    function toggleTerminal() {
-        terminalVisible = !terminalVisible;
-        const terminal = document.getElementById('terminal-console');
-
-        if (terminalVisible) {
-            terminal.classList.add('show');
-            terminalToggleBtn.textContent = '⬆️';
-            terminalToggleBtn.title = 'Hide Terminal Console';
-            logToTerminal('Terminal opened', 'info');
-        } else {
-            terminal.classList.remove('show');
-            terminalToggleBtn.textContent = '⬇️';
-            terminalToggleBtn.title = 'Show Terminal Console';
-        }
-    }
-
-    // Add event listeners for terminal
-    terminalToggleBtn.addEventListener('click', toggleTerminal);
-
-    document.getElementById('terminal-close').addEventListener('click', () => {
-        if (terminalVisible) {
-            toggleTerminal();
-        }
-    });
-
-    // Add keyboard shortcut for terminal (Ctrl + `)
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === '`') {
-            e.preventDefault();
-            toggleTerminal();
-        }
-    });
-
-    // Notification system
-    function showNotification(message, type = 'info', duration = 3000) {
-        // Remove any existing notifications
-        const existingNotifications = document.querySelectorAll('.notification');
-        existingNotifications.forEach(notif => notif.remove());
-
-        // Create notification element
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-
-        // Add to page
-        document.body.appendChild(notification);
-
-        // Remove after duration
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, duration);
-
-        return notification;
-    }
-
-    // Terminal logging functions
-    function logToTerminal(message, type = 'info') {
-        const timestamp = new Date().toLocaleTimeString();
-        const logLine = `[${timestamp}] ${message}\n`;
-
-        const content = document.getElementById('terminal-content');
-        const logElement = document.createElement('span');
-        logElement.className = `log-${type}`;
-        logElement.textContent = logLine;
-
-        content.appendChild(logElement);
-        content.scrollTop = content.scrollHeight;
-    }
-
-    function clearTerminal() {
-        const content = document.getElementById('terminal-content');
-        content.innerHTML = '';
-        logToTerminal('Terminal cleared', 'info');
-    }
-
-    // Terminal toggle functionality
-    function toggleTerminal() {
-        terminalVisible = !terminalVisible;
-        const terminal = document.getElementById('terminal-console');
-
-        if (terminalVisible) {
-            terminal.classList.add('show');
-            terminalToggleBtn.textContent = '⬆️';
-            terminalToggleBtn.title = 'Hide Terminal Console';
-            logToTerminal('Terminal opened', 'info');
-        } else {
-            terminal.classList.remove('show');
-            terminalToggleBtn.textContent = '⬇️';
-            terminalToggleBtn.title = 'Show Terminal Console';
-        }
-    }
-
-    // Add event listeners for terminal
-    terminalToggleBtn.addEventListener('click', toggleTerminal);
-
-    document.getElementById('terminal-close').addEventListener('click', () => {
-        if (terminalVisible) {
-            toggleTerminal();
-        }
-    });
-
-    // Add keyboard shortcut for terminal (Ctrl + `)
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === '`') {
-            e.preventDefault();
-            toggleTerminal();
-        }
-    });
 
     // Function to extract image URL
     function extractImageUrl(img) {
@@ -669,8 +327,7 @@
     async function downloadImage(img, divElement) {
         const imageUrl = extractImageUrl(img);
         if (!imageUrl) {
-            logToTerminal('Could not extract image URL from current image', 'error');
-            showNotification('❌ Failed to extract image URL!\nThe image source could not be found.', 'error', 4000);
+            alert('Could not extract image URL');
             return;
         }
 
@@ -681,15 +338,11 @@
         const filename = generateFilename(altText, downloadCount, imageType, postDate);
 
         try {
-            logToTerminal(`Starting download: ${filename}`, 'info');
             GM_download(imageUrl, filename);
-            logToTerminal(`Successfully downloaded: ${filename}`, 'success');
-            showNotification(`✅ Image downloaded!\n${filename}`, 'info', 2500);
             console.log(`Downloaded: ${filename}`);
         } catch (error) {
-            logToTerminal(`Failed to download image: ${filename} - ${error.message}`, 'error');
-            showNotification(`❌ Download failed!\n${filename}\n${error.message}`, 'error', 4000);
             console.error('Failed to download image:', error);
+            alert('Failed to download image');
         }
     }
 
@@ -776,17 +429,7 @@
                     iconContainer.style.background = originalBg;
                 }, 1000);
             } else {
-                // Check if this might be a video by looking for video elements
-                const hasVideo = divElement.querySelector('video') !== null;
-                const hasVideoIcon = divElement.querySelector('[aria-label*="video" i]') !== null;
-
-                if (hasVideo || hasVideoIcon) {
-                    logToTerminal('Video content detected - cannot download videos as images', 'warning');
-                    showNotification('📹 This appears to be a video, not an image!\nVideos cannot be downloaded with this tool.', 'warning', 4000);
-                } else {
-                    logToTerminal('No current image found for download - content may be a video or unsupported format', 'error');
-                    showNotification('🚫 No image found!\nThis might be a video or unsupported content.', 'error', 4000);
-                }
+                alert('No image found');
             }
         });
 
@@ -824,8 +467,6 @@
         
         let newImagesDownloaded = 0;
 
-        logToTerminal(`Scanning ${allDivs.length} posts for new images`, 'progress');
-
         for (const div of allDivs) {
             // Try to find image with any of the supported selectors
             let img = div.querySelector('img.x1rg5ohu.x5yr21d.xl1xv1r.xh8yej3') ||
@@ -847,22 +488,16 @@
                     const filename = generateFilename(altText, downloadCount, imageType, postDate);
 
                     try {
-                        logToTerminal(`Downloading: ${filename}`, 'progress');
                         GM_download(imageUrl, filename);
                         newImagesDownloaded++;
 
                         progressDiv.textContent = `Downloaded ${downloadCount} images - ${filename.substring(0, 50)}...`;
                         await delay(300);
                     } catch (error) {
-                        logToTerminal(`Failed to download: ${filename} - ${error.message}`, 'error');
                         console.error('Failed to download image:', error);
                     }
                 }
             }
-        }
-
-        if (newImagesDownloaded > 0) {
-            logToTerminal(`Downloaded ${newImagesDownloaded} new images from current viewport`, 'success');
         }
 
         return newImagesDownloaded;
@@ -876,9 +511,6 @@
         let noNewContentCount = 0;
         let scrollAttempts = 0;
 
-        logToTerminal('Starting bulk download process', 'info');
-        logToTerminal('Collecting images from initial viewport', 'progress');
-
         // Download images from the initial viewport
         await collectAndDownloadNewImages(downloadedUrls);
 
@@ -887,7 +519,6 @@
             const beforeDownloadCount = downloadCount;
 
             // Scroll down
-            logToTerminal(`Scrolling down (attempt ${scrollAttempts + 1})`, 'progress');
             window.scrollTo(0, document.body.scrollHeight);
             scrollAttempts++;
 
@@ -902,18 +533,15 @@
 
             // Check if we found new content or images
             if (afterHeight > beforeHeight) {
-                noNewContentCount = 0; // Reset counter if new content appeared
-                logToTerminal(`New content loaded, page height: ${afterHeight}px`, 'info');
+                noNewContentCount = 0;
             } else {
                 noNewContentCount++;
-                logToTerminal(`No new content found (${noNewContentCount}/5)`, 'warning');
             }
 
             if (afterDownloadCount > beforeDownloadCount) {
-                noNewImagesCount = 0; // Reset counter if new images were downloaded
+                noNewImagesCount = 0;
             } else {
                 noNewImagesCount++;
-                logToTerminal(`No new images found (${noNewImagesCount}/5)`, 'warning');
             }
 
             progressDiv.textContent = `Scrolling and downloading... Found ${downloadCount} images (attempt ${scrollAttempts})`;
@@ -922,67 +550,44 @@
             if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 100) {
                 if (noNewContentCount >= 3 && noNewImagesCount >= 3) {
                     hasMoreContent = false;
-                    logToTerminal('Reached end of content', 'info');
                 }
             }
         }
 
         // Final attempt to collect any remaining images
-        logToTerminal('Performing final scan for any remaining images', 'progress');
         await delay(2000);
         await collectAndDownloadNewImages(downloadedUrls);
 
-        logToTerminal(`Bulk download completed! Total attempts: ${scrollAttempts}`, 'success');
         return { totalDownloaded: downloadCount, scrollAttempts };
     }
 
     // Function to find and download all images
     async function findAndDownloadAllImages() {
         if (isDownloading) {
-            logToTerminal('Download already in progress!', 'warning');
             alert('Download already in progress!');
             return;
         }
 
         isDownloading = true;
-        downloadCount = 0; // Reset counter
+        downloadCount = 0;
         progressDiv.style.display = 'block';
         progressDiv.textContent = 'Starting simultaneous scroll and download...';
 
-        // Clear terminal and show it if not visible
-        clearTerminal();
-        if (!terminalVisible) {
-            toggleTerminal();
-        }
-
-        logToTerminal('=== Starting Facebook Image Download Session ===', 'info');
-        logToTerminal('Initializing bulk download process...', 'progress');
-
         try {
-            // Scroll and download images simultaneously
             const { totalDownloaded, scrollAttempts } = await scrollAndDownloadImages();
 
-            const successMessage = `Download complete! Successfully downloaded ${totalDownloaded} images after ${scrollAttempts} scroll attempts.`;
-            progressDiv.textContent = successMessage;
-            logToTerminal(`=== Download Session Complete ===`, 'success');
-            logToTerminal(`Total images downloaded: ${totalDownloaded}`, 'success');
-            logToTerminal(`Scroll attempts: ${scrollAttempts}`, 'info');
+            progressDiv.textContent = `Download complete! Successfully downloaded ${totalDownloaded} images after ${scrollAttempts} scroll attempts.`;
 
             if (totalDownloaded === 0) {
-                const noImagesMessage = 'No images found with the specified classes. Make sure you are on a Facebook page with images.';
-                progressDiv.textContent = noImagesMessage;
-                logToTerminal(noImagesMessage, 'warning');
+                progressDiv.textContent = 'No images found with the specified classes. Make sure you are on a Facebook page with images.';
             }
 
             await delay(5000);
             progressDiv.style.display = 'none';
 
         } catch (error) {
-            const errorMessage = `Error occurred during download process: ${error.message}`;
             console.error('Error during download process:', error);
             progressDiv.textContent = 'Error occurred during download process';
-            logToTerminal(`=== Download Session Failed ===`, 'error');
-            logToTerminal(errorMessage, 'error');
             await delay(3000);
             progressDiv.style.display = 'none';
         }
@@ -1063,17 +668,12 @@
         });
 
         if (newIconsAdded > 0) {
-            logToTerminal(`Added ${newIconsAdded} download icons to new posts`, 'info');
             console.log(`Added ${newIconsAdded} download icons to Facebook posts`);
         }
     }
 
     // Start monitoring
     function startMonitoring() {
-        logToTerminal('Facebook Simple Image Downloader script loaded successfully', 'success');
-        logToTerminal('Individual download icons will appear on hover', 'info');
-        logToTerminal('Click the Download button or press Ctrl+Shift+D for bulk download', 'info');
-        logToTerminal('Press Ctrl+` to toggle this terminal', 'info');
         console.log('Facebook Simple Image Downloader loaded');
         
         // Initial scan
